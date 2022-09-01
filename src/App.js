@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { useState, useRef } from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import React from 'react';
+import { useState } from 'react';
 import "trix";
 import "trix/dist/trix.css";
 import { TrixEditor } from "react-trix";
