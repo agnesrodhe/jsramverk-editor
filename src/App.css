@@ -1,5 +1,6 @@
 .App {
-  text-align: center;
+  text-align: left;
+  background-color: #ffffff;
 }
 
 .App-logo {
@@ -14,18 +15,46 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #f1d2d4;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  text-align: center;}
+
+.App-navbar {
+  color: #13181a;
+  margin-top: 0px;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #8fc8d8;
+}
+
+.trixDiv {
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 15%;
+  height: 100vh;
+  margin-top: 10px;
+}
+
+.trix {
+  background-color: white;
+  color:#0b455b;
+  font-size: 15px;
+  overflow-y: auto;
+  min-height: 600px !important;
+}
+
+.saveBtn {
+  background-color: #345f52;
+  color: white;
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 0.5 solid rgb(184, 179, 179);
 }
 
 @keyframes App-logo-spin {

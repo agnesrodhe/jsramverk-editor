@@ -1,23 +1,37 @@
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
+import { useState, useRef } from 'react';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import "trix";
+import "trix/dist/trix.css";
+import { TrixEditor } from "react-trix";
 import './App.css';
 
 function App() {
+  const [message, setMessage] = useState('');
+
+  function save() {
+    console.log(message);
+  };
+
+  function handleChange(event) {
+    setMessage(event);
+  };
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h2>TextEditor</h2>
       </header>
+      <nav className="App-navbar">
+          <button className="saveBtn" onClick={save}>Spara</button>
+      </nav>
+      <div className="trixDiv">
+          <TrixEditor 
+            className='trix' 
+            name="message" 
+            onChange={handleChange}
+          />
+      </div>
     </div>
   );
 }
