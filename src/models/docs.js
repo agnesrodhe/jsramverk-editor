@@ -20,7 +20,6 @@ const docsModel = {
             method: 'POST'
         });
         const result = await response.json();
-
         console.log(result);
     },
 

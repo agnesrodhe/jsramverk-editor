@@ -4,6 +4,9 @@ import "trix";
 import "trix/dist/trix.css";
 import docsModel from '../models/docs';
 import { useEffect } from "react";
+import Save from './Save';
+import Create from './Create';
+import DropDown from "./DropDown";
 
 function Editor() {
     const [docs, setDocs] = useState([]);
@@ -20,27 +23,29 @@ function Editor() {
         (async () => {
             await fetchDoc();
         })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            setEditorContent(currentDoc.text);
+        })();
     }, [currentDoc]);
 
-    function choosenDoc(e) {
+    async function choosenDoc(e) {
         const id = e.target.value.trim().toString();
+        console.log(id, docs[id]);
         if (id !== "-99") {
-            setCurrentDoc(docs[id]);
+            await setCurrentDoc(docs[id]);
         } else {
             setCurrentDoc({_id: null, name:"", text:""});
         }
     }
 
     function setEditorContent(content) {
-        console.log(currentDoc.text);
         let element = document.querySelector("trix-editor");
         element.value = "";
         element.editor.setSelectedRange([0, 0]);
         element.editor.insertHTML(content);
-    }
-
-    function openDoc() {
-        setEditorContent(currentDoc.text);
     }
 
     async function saveDoc() {
@@ -74,13 +79,9 @@ function Editor() {
     return (
         <div>
             <nav className="App-navbar">
-                <button className="saveBtn" onClick={saveDoc}>Spara</button>
-                <button className="saveBtn" value="Alert" onClick={createDoc}>Skapa nytt</button>
-                <select className="saveBtn" onChange={choosenDoc}>
-                <option value="-99" key="0">Välj ett dokument</option>
-                {docs.map((doc, index) => <option value={index} key={index}>{doc.name}</option>)}
-            </select>
-            <button className="saveBtn" onClick={openDoc}>Öppna</button>
+                <Save onClick={saveDoc} />
+                <Create onClick={createDoc} />
+                <DropDown onChange={choosenDoc} docs={docs} />
             </nav>
             <div className="trixDiv">
                 <TrixEditor autoFocus={true}
