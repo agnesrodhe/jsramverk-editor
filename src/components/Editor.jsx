@@ -8,44 +8,22 @@ import Save from './Save';
 import Create from './Create';
 import DropDown from "./DropDown";
 
-function Editor() {
-    const [docs, setDocs] = useState([]);
-    const [currentDoc, setCurrentDoc] = useState({});
-    const [message, setMessage] = useState('');
+function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc}) {
     const [enteredDocName, setEnteredDocName] = useState("");
 
-    async function fetchDoc() {
-        const allDocs = await docsModel.getAllDocs();
-        setDocs(allDocs);
-    }
-
     useEffect(() => {
         (async () => {
-            await fetchDoc();
-        })();
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            setEditorContent(currentDoc.text);
+            setEditorContent(currentDoc);
         })();
     }, [currentDoc]);
 
     async function choosenDoc(e) {
         const id = e.target.value.trim().toString();
-        console.log(id, docs[id]);
         if (id !== "-99") {
             await setCurrentDoc(docs[id]);
         } else {
             setCurrentDoc({_id: null, name:"", text:""});
         }
-    }
-
-    function setEditorContent(content) {
-        let element = document.querySelector("trix-editor");
-        element.value = "";
-        element.editor.setSelectedRange([0, 0]);
-        element.editor.insertHTML(content);
     }
 
     async function saveDoc() {
@@ -64,16 +42,15 @@ function Editor() {
             };
             await docsModel.updateDoc(newObject);
         }
+
+        await fetchDoc();
+        setEditorContent(newObject);
     };
 
     function createDoc() {
-        setEditorContent("");
+        setEditorContent({"_id": "", "name": "", "text": ""});
         const docName = prompt('Dokumentets namn: ');
         setEnteredDocName(docName);
-    };
-
-    function handleChange(event) {
-        setMessage(event);
     };
 
     return (
@@ -87,7 +64,7 @@ function Editor() {
                 <TrixEditor autoFocus={true}
                     className='trix' 
                     name="message"
-                    onChange={handleChange} 
+                    onChange={event => handleChange(event, currentDoc._id)} 
                 /> 
             </div>
         </div>

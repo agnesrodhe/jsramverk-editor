@@ -1,6 +1,6 @@
 const docsModel = {
     baseUrl: window.location.href.includes("localhost") ?
-    "http://localhost:1337" :
+    "http://localhost:8976" :
     "https://jsramverk-editor-agro21.azurewebsites.net",
 
     getAllDocs: async function getAllDocs() {
