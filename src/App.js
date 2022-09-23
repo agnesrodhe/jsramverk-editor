@@ -42,9 +42,6 @@ function App() {
             "text": event
         };
 
-        if (id == currentDoc._id) {
-            console.log("JA");
-        };
         setDocsText({...docsText, ...tmpObject})
         setMessage(event);
     }
@@ -80,7 +77,7 @@ function App() {
         if (socket) {
             socket.on("doc", (data) => {
                 //console.log(data);
-                //setEditorContent(data);
+                setEditorContent(data);
                 sendToSocket = false;
 
             });
