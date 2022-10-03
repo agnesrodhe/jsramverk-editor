@@ -3,8 +3,13 @@ const docsModel = {
     "http://localhost:8976" :
     "https://jsramverk-editor-agro21.azurewebsites.net",
 
-    getAllDocs: async function getAllDocs() {
-        const response = await fetch(`${docsModel.baseUrl}/documents`);
+    getAllDocs: async function getAllDocs(token) {
+        console.log(token);
+        const response = await fetch(`${docsModel.baseUrl}/documents`, {
+            headers: {
+                "x-access-token": token,
+            }
+        });
 
         const documents = await response.json();
         return documents.data;

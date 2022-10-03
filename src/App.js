@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import './App.css';
-import Editor from './components/Editor';
-import docsModel from './models/docs';
 import { io } from "socket.io-client";
+import React, { useEffect, useState } from 'react';
+
+import docsModel from './models/docs';
+
+import Editor from './components/Editor';
+import Login from './components/Login';
 
 let sendToSocket = true;
 
@@ -12,11 +15,13 @@ function App() {
     const [docsText, setDocsText] = useState([]);
     const [message, setMessage] = useState('');
     const [currentDoc, setCurrentDoc] = useState({});
+    const [token, setToken] = useState("");
 
-    let SERVER_URL = "http://localhost:8976";
+    let SERVER_URL = "https://jsramverk-editor-agro21.azureWebsites.net";
 
     async function fetchDoc() {
-        const allDocs = await docsModel.getAllDocs();
+        console.log(token);
+        const allDocs = await docsModel.getAllDocs(token);
         const allDocsText = [];
         if (socket) {
             allDocs.forEach(document => {
@@ -33,8 +38,7 @@ function App() {
         (async () => {
             await fetchDoc();
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [token]);
 
     function handleChange(event, id) {
         const tmpObject = {
@@ -90,7 +94,12 @@ function App() {
             <h2>TextEditor</h2>
             </header>
             <main>
-            <Editor docs={docs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} />
+                {token ?
+                <Editor docs={docs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} />
+                :
+                <Login setToken={setToken} token={token} />
+                }
+            
             </main>
         </div>
     );
