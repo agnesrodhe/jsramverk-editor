@@ -4,7 +4,6 @@ const docsModel = {
     "https://jsramverk-editor-agro21.azurewebsites.net",
 
     getAllDocs: async function getAllDocs(token) {
-        console.log(token);
         const response = await fetch(`${docsModel.baseUrl}/documents`, {
             headers: {
                 "x-access-token": token,
@@ -14,7 +13,6 @@ const docsModel = {
         const documents = await response.json();
         return documents.data;
     },
-
 
     createDoc: async function createDoc(newDoc) {
         const response = await fetch(`${docsModel.baseUrl}/documents`, {

@@ -26,6 +26,9 @@
 .App-navbar {
   color: #13181a;
   margin-top: 0px;
+  display: flex;
+  justify-content: space-between;
+  background-image: linear-gradient(to right, #345f52, #7c1f76);
 }
 
 .App-link {
@@ -47,6 +50,9 @@
   overflow-y: auto;
   min-height: 600px !important;
 }
+.userButtons {
+  position: relative;
+}
 
 .saveBtn {
   background-color: #345f52;
@@ -54,7 +60,18 @@
   padding: 3px;
   padding-left: 10px;
   padding-right: 10px;
-  border: 0.5 solid rgb(184, 179, 179);
+  padding: 5px;
+  border: 0.5 solid rgb(17, 16, 16);
+}
+
+.userBtn {
+  background-color: #7c1f76;
+  color: white;
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding: 5px;
+  border: 0.5 solid rgb(28, 27, 27);
 }
 
 .form {
@@ -95,12 +112,10 @@ input {
 }
 
 .submit {
-  margin-top: 40px;
-  margin-bottom: 20px;
   margin-left: 10px;
   padding: 5px;
-  background: #9d238f;
-  color: white;
+  background: #eda9e5;
+  color: rgb(1, 1, 1);
 }
 
 .register {

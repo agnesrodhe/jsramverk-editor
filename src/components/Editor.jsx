@@ -7,9 +7,11 @@ import { useEffect } from "react";
 import Save from './Save';
 import Create from './Create';
 import DropDown from "./DropDown";
+import Allow from "./Allow";
 
-function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc}) {
+function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc, user, users, setToken, token}) {
     const [enteredDocName, setEnteredDocName] = useState("");
+    const [owner, setOwner] = useState("");
 
     useEffect(() => {
         (async () => {
@@ -21,6 +23,7 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
         const id = e.target.value.trim().toString();
         if (id !== "-99") {
             await setCurrentDoc(docs[id]);
+            setOwner(docs[id].owner);
         } else {
             setCurrentDoc({_id: null, name:"", text:""});
         }
@@ -31,14 +34,18 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
         if (enteredDocName !== "") {
             newObject = {
                 "name": enteredDocName,
-                "text": message
+                "text": message,
+                "owner": owner,
+                "allowed_users": []
             };
             await docsModel.createDoc(newObject);
         } else {
             newObject = {
                 "name": currentDoc.name,
                 "text": message,
-                "_id": currentDoc._id
+                "_id": currentDoc._id,
+                "owner": currentDoc.owner,
+                "allowed_users": currentDoc.allowed_users
             };
             await docsModel.updateDoc(newObject);
         }
@@ -50,16 +57,40 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
     function createDoc() {
         setEditorContent({"_id": "", "name": "", "text": ""});
         const docName = prompt('Dokumentets namn: ');
+        setOwner(user.email);
         setEnteredDocName(docName);
     };
 
+    function logOut() {
+        console.log(token);
+        setToken("");
+        console.log(token);
+    }
+
     return (
         <div>
+            {(owner == user.email) ?
             <nav className="App-navbar">
+                <div>
                 <Save onClick={saveDoc} />
                 <Create onClick={createDoc} />
                 <DropDown onChange={choosenDoc} docs={docs} />
+                </div>
+                <Allow users={users} currentDoc={currentDoc} logOut={logOut}/>
             </nav>
+            :
+            <nav className="App-navbar">
+                <div>
+                <Save onClick={saveDoc} />
+                <Create onClick={createDoc} />
+                <DropDown onChange={choosenDoc} docs={docs} />
+                </div>
+                <div>
+                <button className="submit" onClick={logOut}>Logga ut</button>
+                </div>
+            </nav>
+            }
+
             <div className="trixDiv">
                 <TrixEditor autoFocus={true}
                     className='trix' 

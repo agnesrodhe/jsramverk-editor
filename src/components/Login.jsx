@@ -1,9 +1,6 @@
-import { useState } from "react";
-
 import authModel from "../models/auth";
 
-export default function Login({setToken, token}) {
-    const [user, setUser] = useState({});
+export default function Login({setToken, setUser, user}) {
 
     function handleChange(event) {
         const tmpObject = {};
@@ -20,7 +17,6 @@ export default function Login({setToken, token}) {
     async function login() {
         const loginResult = await authModel.login(user);
         if (loginResult.data.token) {
-            console.log(loginResult.data);
             setToken(loginResult.data.token);
         }
     }

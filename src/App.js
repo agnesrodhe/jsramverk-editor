@@ -3,11 +3,36 @@ import { io } from "socket.io-client";
 import React, { useEffect, useState } from 'react';
 
 import docsModel from './models/docs';
+import authModel from './models/auth';
 
 import Editor from './components/Editor';
 import Login from './components/Login';
 
 let sendToSocket = true;
+
+function setAccessedDocs(allDocs, user) {
+    const allAccessedDocs = [];
+        allDocs.forEach(document => {
+            if (document.owner.includes(user.email)) {
+                allAccessedDocs.push(document);
+            } else if (document.allowed_users.includes(user.email)) {
+                    allAccessedDocs.push(document);
+                }
+        });
+    return allAccessedDocs;
+}
+
+function setTextToDocs(allDocs, socket) {
+    const allDocsText = [];
+    if (socket) {
+        allDocs.forEach(document => {
+            const docObj = {"_id": document._id, "text": document.text}
+            allDocsText.push(docObj);
+            socket.emit("create", allDocs[document._id]);
+        });
+    }
+    return allDocsText;
+}
 
 function App() {
     const [socket, setSocket] = useState(null);
@@ -16,27 +41,29 @@ function App() {
     const [message, setMessage] = useState('');
     const [currentDoc, setCurrentDoc] = useState({});
     const [token, setToken] = useState("");
+    const [user, setUser] = useState({});
+    const [users, setUsers] = useState({});
 
-    let SERVER_URL = "https://jsramverk-editor-agro21.azureWebsites.net";
+    let SERVER_URL = "http://localhost:8976";
 
     async function fetchDoc() {
-        console.log(token);
         const allDocs = await docsModel.getAllDocs(token);
-        const allDocsText = [];
-        if (socket) {
-            allDocs.forEach(document => {
-                const docObj = {"_id": document._id, "text": document.text}
-                allDocsText.push(docObj);
-                socket.emit("create", allDocs[document._id]);
-            });
-        }
+        const accessedDocs = setAccessedDocs(allDocs, user);
+        const allDocsText = setTextToDocs(accessedDocs, socket);
         setDocsText(allDocsText);
-        setDocs(allDocs);
+        setDocs(accessedDocs);
+    }
+
+    async function fetchUsers() {
+        const allUsers = await authModel.getAllUsers();
+        console.log("fetchUsers", allUsers, "!");
+        setUsers(allUsers);
     }
 
     useEffect(() => {
         (async () => {
             await fetchDoc();
+            await fetchUsers();
         })();
     }, [token]);
 
@@ -95,9 +122,9 @@ function App() {
             </header>
             <main>
                 {token ?
-                <Editor docs={docs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} />
+                <Editor docs={docs} setDocs={setDocs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} user={user} users={users} setToken={setToken} token={token} />
                 :
-                <Login setToken={setToken} token={token} />
+                <Login setToken={setToken} token={token} setUser={setUser} user={user} />
                 }
             
             </main>
