@@ -44,7 +44,9 @@ function App() {
     const [user, setUser] = useState({});
     const [users, setUsers] = useState({});
 
-    let SERVER_URL = "http://localhost:8976";
+    let SERVER_URL = window.location.href.includes("localhost") ?
+    "http://localhost:8976" :
+    "https://jsramverk-editor-agro21.azurewebsites.net";
 
     async function fetchDoc() {
         const allDocs = await docsModel.getAllDocs(token);
