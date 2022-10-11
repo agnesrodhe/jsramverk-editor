@@ -6,7 +6,6 @@ function DropDown({onChange, docs}) {
             <option value="-99" key="0">Välj ett dokument</option>
             {docs.map((doc, index) => <option data-testid="select" value={index} key={index}>{doc.name}</option>)}
         </select>
-
     )
 }
 export default DropDown;

@@ -8,8 +8,9 @@ import Save from './Save';
 import Create from './Create';
 import DropDown from "./DropDown";
 import Allow from "./Allow";
+import LoggedIn from "./LoggedIn";
 
-function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc, user, users, setToken, token}) {
+function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc, user, setToken, token}) {
     const [enteredDocName, setEnteredDocName] = useState("");
     const [owner, setOwner] = useState("");
 
@@ -26,6 +27,7 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
             setOwner(docs[id].owner);
         } else {
             setCurrentDoc({_id: null, name:"", text:""});
+            setOwner("");
         }
     }
 
@@ -76,7 +78,7 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
                 <Create onClick={createDoc} />
                 <DropDown onChange={choosenDoc} docs={docs} />
                 </div>
-                <Allow users={users} currentDoc={currentDoc} logOut={logOut}/>
+                <Allow currentDoc={currentDoc} />
             </nav>
             :
             <nav className="App-navbar">
@@ -85,12 +87,9 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
                 <Create onClick={createDoc} />
                 <DropDown onChange={choosenDoc} docs={docs} />
                 </div>
-                <div>
-                <button className="submit" onClick={logOut}>Logga ut</button>
-                </div>
             </nav>
             }
-
+            <LoggedIn logOut={logOut} user={user} />
             <div className="trixDiv">
                 <TrixEditor autoFocus={true}
                     className='trix' 

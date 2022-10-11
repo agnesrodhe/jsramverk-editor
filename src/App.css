@@ -127,6 +127,17 @@ input {
   color: rgb(4, 4, 4);
 }
 
+.user {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+}
+
+.user p {
+  margin: 5px;
+  font-size: 14px;
+}
+
 
 
 @keyframes App-logo-spin {
