@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 import React, { useEffect, useState } from 'react';
 
 import docsModel from './models/docs';
-import authModel from './models/auth';
 
 import Editor from './components/Editor';
 import Login from './components/Login';
@@ -42,7 +41,7 @@ function App() {
     const [currentDoc, setCurrentDoc] = useState({});
     const [token, setToken] = useState("");
     const [user, setUser] = useState({});
-    // const [users, setUsers] = useState({});
+    const [tmpObject, setTmpObject] = useState({});
 
     let SERVER_URL = window.location.href.includes("localhost") ?
     "http://localhost:8976" :
@@ -51,21 +50,14 @@ function App() {
     async function fetchDoc() {
         const allDocs = await docsModel.getAllDocs(token);
         const accessedDocs = setAccessedDocs(allDocs, user);
-        const allDocsText = setTextToDocs(accessedDocs, socket);
-        setDocsText(allDocsText);
+        // const allDocsText = setTextToDocs(accessedDocs, socket);
+        // setDocsText(allDocsText);
         setDocs(accessedDocs);
     }
-
-    // async function fetchUsers() {
-    //     const allUsers = await authModel.getAllUsers();
-    //     console.log("fetchUsers", allUsers, "!");
-    //     setUsers(allUsers);
-    // }
 
     useEffect(() => {
         (async () => {
             await fetchDoc();
-            // await fetchUsers();
         })();
     }, [token]);
 
@@ -75,10 +67,9 @@ function App() {
             "text": event
         };
 
-        setDocsText({...docsText, ...tmpObject})
+        setDocsText(tmpObject)
         setMessage(event);
     }
-
 
     function setEditorContent(content) {
         let element = document.querySelector("trix-editor");
@@ -89,11 +80,34 @@ function App() {
     
     useEffect(() => {
         if (socket && sendToSocket) {
-            socket.emit("doc", docsText);
+            console.log("docsText", docsText._id);
+            if (docsText._id != null) {
+                console.log("docsText", docsText);
+                socket.emit("doc", docsText);
+            }
+            socket.on("document", (data) => {
+                console.log("data", data)
+                console.log("currentId och Data", currentDoc._id, data._id);
+                if (currentDoc._id == data._id) {
+                    // console.log("currentdoc when exists", currentDoc)
+                    console.log("Här sätts content");
+                    setEditorContent(data);
+                } else if (currentDoc._id == null) {
+                    console.log("current when null", currentDoc)
+                } else {
+                    console.log("currentdoc if not the same as data", currentDoc)
+                }
+            sendToSocket = false;
+        });
         }
-
         sendToSocket = true;
     }, [docsText]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit("create", currentDoc._id);
+        }
+    }, [currentDoc]);
 
     useEffect(() => {
         setSocket(io(SERVER_URL));
@@ -106,15 +120,11 @@ function App() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        if (socket) {
-            socket.on("doc", (data) => {
-                    console.log("ändrar i socket")
-                    setEditorContent(data);
-                sendToSocket = false;
-            });
-        }
-    }, [socket]);
+    // useEffect(() => {
+    //     if (socket) {
+
+    //     }
+    // }, [socket]);
 
     return (
         <div className="App">

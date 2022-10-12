@@ -21,7 +21,6 @@ function Allow({ currentDoc, logOut}) {
                 body: JSON.stringify({ query: "{ users { email } }" })
             });
             const result = await response.json();
-            console.log(result.data.users);
             for (let i = 0; i < result.data.users.length; i++) {
                 namesTmpList.push(result.data.users[i].email);
             }
@@ -37,7 +36,6 @@ function Allow({ currentDoc, logOut}) {
     };
 
     async function addUsers() {
-        console.log(currentDoc.allowed_users);
         let newObject = {};
         if (currentDoc.allowed_users == null) {
             console.log("här");
@@ -47,11 +45,11 @@ function Allow({ currentDoc, logOut}) {
                 "_id": currentDoc._id,
                 "owner": currentDoc.owner,
                 "allowed_users": [
-                    choosenUser.email
+                    choosenUser
                 ]
             };
         } else {
-            currentDoc.allowed_users.push(choosenUser.email)
+            currentDoc.allowed_users.push(choosenUser)
             newObject = {
                 "name": currentDoc.name,
                 "text": currentDoc.text,
@@ -61,7 +59,7 @@ function Allow({ currentDoc, logOut}) {
             };
         };
         await docsModel.updateDoc(newObject);
-        alert(`${choosenUser.email} kan nu redigera dokumentet!`);
+        alert(`${choosenUser} kan nu redigera dokumentet!`);
     };
 
     return (
