@@ -9,6 +9,7 @@ import Create from './Create';
 import DropDown from "./DropDown";
 import Allow from "./Allow";
 import LoggedIn from "./LoggedIn";
+import GeneratePdf from "./GeneratePdf";
 
 function Editor({docs, setEditorContent, handleChange, message, fetchDoc, currentDoc, setCurrentDoc, user, setToken, token}) {
     const [enteredDocName, setEnteredDocName] = useState("");
@@ -16,14 +17,14 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
 
     useEffect(() => {
         (async () => {
-            setEditorContent(currentDoc);
+            setEditorContent(currentDoc, false);
         })();
     }, [currentDoc]);
 
-    async function choosenDoc(e) {
+    function choosenDoc(e) {
         const id = e.target.value.trim().toString();
         if (id !== "-99") {
-            await setCurrentDoc(docs[id]);
+            setCurrentDoc(docs[id]);
             setOwner(docs[id].owner);
         } else {
             setCurrentDoc({_id: null, name:"", text:""});
@@ -64,9 +65,7 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
     };
 
     function logOut() {
-        console.log(token);
         setToken("");
-        console.log(token);
     }
 
     return (
@@ -77,8 +76,11 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
                 <Save onClick={saveDoc} />
                 <Create onClick={createDoc} />
                 <DropDown onChange={choosenDoc} docs={docs} />
+                <GeneratePdf currentDoc={currentDoc} />
                 </div>
-                <Allow currentDoc={currentDoc} />
+                <div>
+                <Allow currentDoc={currentDoc} user={user} />
+                </div>
             </nav>
             :
             <nav className="App-navbar">
@@ -86,6 +88,7 @@ function Editor({docs, setEditorContent, handleChange, message, fetchDoc, curren
                 <Save onClick={saveDoc} />
                 <Create onClick={createDoc} />
                 <DropDown onChange={choosenDoc} docs={docs} />
+                <GeneratePdf currentDoc={currentDoc} />
                 </div>
             </nav>
             }

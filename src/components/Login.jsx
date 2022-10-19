@@ -15,6 +15,7 @@ export default function Login({setToken, setUser, user}) {
     }
 
     async function login() {
+        console.log("hej");
         const loginResult = await authModel.login(user);
         if (loginResult.data.token) {
             setToken(loginResult.data.token);

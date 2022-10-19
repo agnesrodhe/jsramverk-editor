@@ -1,8 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import docsModel from '../models/docs';
+import SendEmail from "./SendEmail";
 
-function Allow({ currentDoc, logOut}) {
+function Allow({ currentDoc, user}) {
     const [choosenUser, setChoosenUser] = useState("");
     const [listOfUserNames, setListOfUserNames] = useState([]);
 
@@ -38,7 +39,6 @@ function Allow({ currentDoc, logOut}) {
     async function addUsers() {
         let newObject = {};
         if (currentDoc.allowed_users == null) {
-            console.log("här");
             newObject = {
                 "name": currentDoc.name,
                 "text": currentDoc.text,
@@ -64,11 +64,16 @@ function Allow({ currentDoc, logOut}) {
 
     return (
         <div className="userButtons">
-            <select data-testid="dropdown" className="userBtn" onChange={choosenUserToAllow}>
-                <option value="-99" key="0">Välj en användare</option>
-                {listOfUserNames.map((user, index) => <option data-testid="select" value={index} key={index}>{user}</option>)}
-            </select>
-            <button className="userBtn" onClick={addUsers}>Ge användare åtkomst</button>
+            <div>
+                <select data-testid="dropdown" className="userBtn" onChange={choosenUserToAllow}>
+                    <option value="-99" key="0">Välj en användare</option>
+                    {listOfUserNames.map((user, index) => <option data-testid="select" value={index} key={index}>{user}</option>)}
+                </select>
+            </div>
+            <div>
+                <button className="userBtn" onClick={addUsers}>Ge användare åtkomst</button>
+            </div>
+            <SendEmail user={user} addUsers={addUsers} currentDoc={currentDoc} setChoosenUser={setChoosenUser} />
         </div>
 
     )

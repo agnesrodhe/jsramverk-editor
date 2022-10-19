@@ -71,31 +71,23 @@ function App() {
         setMessage(event);
     }
 
-    function setEditorContent(content) {
+    function setEditorContent(content, triggerChange=true) {
         let element = document.querySelector("trix-editor");
+        sendToSocket = triggerChange;
         element.value = "";
         element.editor.setSelectedRange([0, 0]);
+        sendToSocket = triggerChange;
         element.editor.insertHTML(content.text);
     }
     
     useEffect(() => {
         if (socket && sendToSocket) {
-            console.log("docsText", docsText._id);
             if (docsText._id != null) {
-                console.log("docsText", docsText);
                 socket.emit("doc", docsText);
             }
             socket.on("document", (data) => {
-                console.log("data", data)
-                console.log("currentId och Data", currentDoc._id, data._id);
                 if (currentDoc._id == data._id) {
-                    // console.log("currentdoc when exists", currentDoc)
-                    console.log("Här sätts content");
                     setEditorContent(data);
-                } else if (currentDoc._id == null) {
-                    console.log("current when null", currentDoc)
-                } else {
-                    console.log("currentdoc if not the same as data", currentDoc)
                 }
             sendToSocket = false;
         });
@@ -120,14 +112,8 @@ function App() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // useEffect(() => {
-    //     if (socket) {
-
-    //     }
-    // }, [socket]);
-
     return (
-        <div className="App">
+        <div className="App" id="root">
             <header className="App-header">
             <h2>TextEditor</h2>
             </header>

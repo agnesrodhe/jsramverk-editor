@@ -3,6 +3,19 @@ const auth = {
     "http://localhost:8976" :
     "https://jsramverk-editor-agro21.azurewebsites.net",
 
+    sendEmail: async function sendEmail(email) {
+        const response = await fetch(`${auth.baseURL}/auth/send-email`, {
+            method: "POST",
+            body: JSON.stringify(email),
+            headers: {
+                'content-type': 'application/json'
+            },
+        });
+        const result = await response.json();
+
+        return result;
+    },
+
     getAllUsers: async function getAllUsers() {
         const response = await fetch(`${auth.baseURL}/auth/users`);
         const users = await response.json();
@@ -23,6 +36,7 @@ const auth = {
     },
 
     login: async function login(user) {
+        console.log(user);
         const response = await fetch(`${auth.baseURL}/auth/login`, {
             method: "POST",
             body: JSON.stringify(user),
@@ -31,7 +45,7 @@ const auth = {
             },
         });
         const result = await response.json();
-
+        console.log(result);
         return result;
 
     }
