@@ -1,6 +1,6 @@
 import './App.css';
 import { io } from "socket.io-client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import docsModel from './models/docs';
 
@@ -21,16 +21,23 @@ function setAccessedDocs(allDocs, user) {
     return allAccessedDocs;
 }
 
-function setTextToDocs(allDocs, socket) {
-    const allDocsText = [];
-    if (socket) {
-        allDocs.forEach(document => {
-            const docObj = {"_id": document._id, "text": document.text}
-            allDocsText.push(docObj);
-            socket.emit("create", allDocs[document._id]);
-        });
-    }
-    return allDocsText;
+function setTextTypeDocs(accessedDocs, codeMode) {
+    const docsCodeType = [];
+    const docsTextType = [];
+    let docsRightType = [];
+    accessedDocs.forEach(document => {
+        if (document.textType.includes("code")) {
+            docsCodeType.push(document);
+        } else if (document.textType.includes("text")) {
+            docsTextType.push(document);
+        };
+    });
+    if (codeMode) {
+        docsRightType = docsCodeType;
+    } else {
+        docsRightType = docsTextType;
+    };
+    return docsRightType;
 }
 
 function App() {
@@ -41,7 +48,8 @@ function App() {
     const [currentDoc, setCurrentDoc] = useState({});
     const [token, setToken] = useState("");
     const [user, setUser] = useState({});
-    const [tmpObject, setTmpObject] = useState({});
+    const [codeMode, setCodeMode] = useState(false);
+    const editorRef = useRef(null);
 
     let SERVER_URL = window.location.href.includes("localhost") ?
     "http://localhost:8976" :
@@ -50,9 +58,8 @@ function App() {
     async function fetchDoc() {
         const allDocs = await docsModel.getAllDocs(token);
         const accessedDocs = setAccessedDocs(allDocs, user);
-        // const allDocsText = setTextToDocs(accessedDocs, socket);
-        // setDocsText(allDocsText);
-        setDocs(accessedDocs);
+        let docsRightType = setTextTypeDocs(accessedDocs, codeMode);
+        setDocs(docsRightType);
     }
 
     useEffect(() => {
@@ -61,32 +68,51 @@ function App() {
         })();
     }, [token]);
 
+    useEffect(() => {
+        (async () => {
+            await fetchDoc();
+        })();
+    }, [codeMode]);
+
     function handleChange(event, id) {
         const tmpObject = {
             "_id": id,
             "text": event
         };
 
-        setDocsText(tmpObject)
+        setDocsText(tmpObject);
         setMessage(event);
     }
 
-    function setEditorContent(content, triggerChange=true) {
-        let element = document.querySelector("trix-editor");
-        sendToSocket = triggerChange;
-        element.value = "";
-        element.editor.setSelectedRange([0, 0]);
-        sendToSocket = triggerChange;
-        element.editor.insertHTML(content.text);
+    function handleEditorDidMount(editor, monaco) {
+        editorRef.current = editor; 
     }
-    
+
+    function setEditorContent(content, triggerChange=true) {
+        if (codeMode) {
+            sendToSocket = triggerChange;
+            editorRef.current.setValue("");
+            sendToSocket = triggerChange;
+            editorRef.current.setValue(content.text);
+        } else {
+            let element = document.querySelector("trix-editor");
+            sendToSocket = triggerChange;
+            element.value = "";
+            element.editor.setSelectedRange([0, 0]);
+            sendToSocket = triggerChange;
+            element.editor.insertHTML(content.text);
+        }
+    }
+
     useEffect(() => {
+        // console.log("sendtosocket", sendToSocket)
+        // console.log(docsText)
         if (socket && sendToSocket) {
             if (docsText._id != null) {
                 socket.emit("doc", docsText);
             }
             socket.on("document", (data) => {
-                if (currentDoc._id == data._id) {
+                if (currentDoc._id === data._id) {
                     setEditorContent(data);
                 }
             sendToSocket = false;
@@ -114,16 +140,21 @@ function App() {
 
     return (
         <div className="App" id="root">
+            {codeMode ?
+            <header className="App-header code-header">
+            <h2>CodeEditor</h2>
+            </header>
+            :
             <header className="App-header">
             <h2>TextEditor</h2>
             </header>
+            }
             <main>
                 {token ?
-                <Editor docs={docs} setDocs={setDocs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} user={user} setToken={setToken} token={token} />
+                <Editor docs={docs} setDocs={setDocs} setEditorContent={setEditorContent} handleChange={handleChange} message={message} fetchDoc={fetchDoc} currentDoc={currentDoc} setCurrentDoc={setCurrentDoc} user={user} setToken={setToken} token={token} setCodeMode={setCodeMode} codeMode={codeMode} editorRef={editorRef} handleEditorDidMount={handleEditorDidMount} />
                 :
-                <Login setToken={setToken} token={token} setUser={setUser} user={user} />
+                <Login setToken={setToken} setUser={setUser} user={user} />
                 }
-            
             </main>
         </div>
     );

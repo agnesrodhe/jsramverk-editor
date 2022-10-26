@@ -23,7 +23,19 @@
   text-shadow:
   -1px 1px 0px white;
   color: #345f52;
-  text-align: center;}
+  text-align: center;
+}
+
+.code-header {
+  background-color: #345f52;
+  color: #f1d2d4;
+  text-shadow:
+  -1px 1px 0px black;
+}
+
+.code-toggle {
+  background-color: #345f52;
+}
 
 .App-navbar {
   color: #13181a;
@@ -54,9 +66,31 @@
   max-width: 50em;
 }
 
+.code-editor {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  margin-top: 20px;
+}
+
+.code-editor button {
+  height: fit-content;
+  margin-left: 10px;
+  padding: 5px;
+  background-color: #3f3d3f;
+  color: #d5cfd5;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.code-editor button:hover {
+  background-color: #bbc0c2;
+  color:#7c1f76;
+}
+
 .closeDiv {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   flex-direction: row;
 }
 
@@ -82,6 +116,11 @@
   padding-right: 10px;
   padding: 5px;
   border: 0.5 solid rgb(17, 16, 16);
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background-color: #61af97;
 }
 
 .userBtn {
@@ -92,6 +131,11 @@
   padding-right: 10px;
   padding: 5px;
   border: 0.5 solid rgb(28, 27, 27);
+  cursor: pointer;
+}
+
+.userBtn:hover {
+  background-color: #c432ba;
 }
 
 .form {
@@ -104,6 +148,65 @@
 .form h2 {
   width: 100%;
   text-align: center;
+}
+
+.toggle {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  background-color: #f1d2d4;
+}
+
+.code-toggle {
+  background-color: #345f52;
+  color: white;
+}
+
+.toggle p {
+  margin-top: 25px;
+}
+
+.switch {
+  margin-left: 5px;
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.switch input {display: none}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 5px;
+  bottom: 2.5px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.input:checked + .slider {
+  background-color: rgb(42, 39, 39);
+}
+
+.input:checked + .slider:before {
+  transform: translateX(25px);
 }
 
 label {
@@ -136,6 +239,11 @@ input {
   padding: 5px;
   background: #eda9e5;
   color: rgb(1, 1, 1);
+  cursor: pointer;
+}
+
+.submit:hover {
+  background-color: #eec4eb;
 }
 
 .register {
@@ -179,7 +287,6 @@ input {
 .modalForm input {
   width: 100%;
 }
-
 
 @keyframes App-logo-spin {
   from {

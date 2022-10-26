@@ -1,4 +1,3 @@
-import { toBePartiallyChecked } from "@testing-library/jest-dom/dist/matchers";
 import { jsPDF } from "jspdf";
 
 function GeneratePdf({ currentDoc }) {

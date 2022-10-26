@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import docsModel from '../models/docs';
+import docsModel from '../../models/docs';
 import SendEmail from "./SendEmail";
 
 function Allow({ currentDoc, user}) {
@@ -43,6 +43,7 @@ function Allow({ currentDoc, user}) {
                 "name": currentDoc.name,
                 "text": currentDoc.text,
                 "_id": currentDoc._id,
+                "textType": currentDoc.textType,
                 "owner": currentDoc.owner,
                 "allowed_users": [
                     choosenUser
@@ -54,6 +55,7 @@ function Allow({ currentDoc, user}) {
                 "name": currentDoc.name,
                 "text": currentDoc.text,
                 "_id": currentDoc._id,
+                "textType": currentDoc.textType,
                 "owner": currentDoc.owner,
                 "allowed_users": currentDoc.allowed_users
             };

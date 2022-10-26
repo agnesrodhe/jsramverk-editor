@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import React, { useState } from 'react';
-import authModel from '../models/auth';
+import authModel from '../../models/auth';
 
 const customStyles = {
     content: {

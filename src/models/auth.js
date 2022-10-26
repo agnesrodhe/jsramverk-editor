@@ -4,6 +4,7 @@ const auth = {
     "https://jsramverk-editor-agro21.azurewebsites.net",
 
     sendEmail: async function sendEmail(email) {
+        console.log("authModel");
         const response = await fetch(`${auth.baseURL}/auth/send-email`, {
             method: "POST",
             body: JSON.stringify(email),
@@ -12,7 +13,7 @@ const auth = {
             },
         });
         const result = await response.json();
-
+        console.log(result);
         return result;
     },
 
